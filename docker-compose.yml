@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+    #Golang API
+    api:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        container_name: api-rs
+        environment:
+              - APP_ENV=${APP_ENV}
+        volumes:
+              - ./:/usr/local/go/src/api-rs/
+        ports:
+              - 8081:8080
