@@ -30,14 +30,14 @@ func SetupDatabaseConnection() *gorm.DB {
 
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
-	// dbHost := os.Getenv("DB_HOST")
+	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		dbUser,
 		dbPass,
-		"host.docker.internal",
+		dbHost,
 		dbPort,
 		dbName,
 	)
@@ -117,7 +117,19 @@ func SetupDatabaseConnection() *gorm.DB {
 	}
 	db, err := gorm.Open(mysql.Open(dsn), gormConfig)
 	if err != nil {
-		panic("Failed to create a connection to database")
+		dbHost = os.Getenv("DB_HOST_DOCKER")
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			dbUser,
+			dbPass,
+			dbHost,
+			dbPort,
+			dbName,
+		)
+
+		db, err = gorm.Open(mysql.Open(dsn), gormConfig)
+		if err != nil {
+			panic("Failed to create a connection to database")
+		}
 	}
 
 	dbCli, err := db.DB()
