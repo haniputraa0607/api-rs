@@ -6,3 +6,9 @@ type Meta struct {
 	TotalPages int64 `json:"total_pages"`
 	TotalRows  int64 `json:"total_rows"`
 }
+
+type Common struct {
+	Page   int64   `form:"page" binding:"gt=0"`
+	Limit  int64   `form:"limit" binding:"gt=0"`
+	Search *string `form:"search"`
+}

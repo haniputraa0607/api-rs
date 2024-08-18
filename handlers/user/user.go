@@ -34,7 +34,7 @@ func (h *userHandler) ListUser(ctx *gin.Context) {
 
 func (h *userHandler) Login(ctx *gin.Context) {
 	var request schemas.LoginRequest
-	err := utility.ShouldBindJSON(ctx, &request)
+	err := utility.ShouldBind(ctx, &request)
 	if err != nil {
 		error := utility.FormatValidationError(err)
 		utility.ApiResponse(ctx, http.StatusBadRequest, error, nil, nil)
