@@ -14,6 +14,7 @@ type ContactRepository interface {
 	SaveContact(contact models.Contact) (err error)
 	GetContact(ID uint64) (contact *models.Contact, err error)
 	DeleteContact(contact models.Contact) (err error)
+	ListContact() (contacts []*models.Contact, err error)
 }
 
 type contactRepository struct {
@@ -85,4 +86,16 @@ func (r *contactRepository) DeleteContact(contact models.Contact) (err error) {
 	}
 
 	return nil
+}
+
+func (r *contactRepository) ListContact() (contacts []*models.Contact, err error) {
+	var (
+		db = r.db.Model(&contacts)
+	)
+
+	if err := db.Find(&contacts).Error; err != nil {
+		return nil, err
+	}
+
+	return contacts, nil
 }

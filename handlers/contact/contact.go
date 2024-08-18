@@ -15,6 +15,7 @@ type ContactHandler interface {
 	DeleteContact(ctx *gin.Context)
 	GetContact(ctx *gin.Context)
 	UpdateContact(ctx *gin.Context)
+	GetContactClient(ctx *gin.Context)
 }
 
 type contactHandler struct {
@@ -29,8 +30,7 @@ func (h *contactHandler) GetContacts(ctx *gin.Context) {
 	var request schemas.Common
 	err := utility.ShouldBind(ctx, &request)
 	if err != nil {
-		error := utility.FormatValidationError(err)
-		utility.ApiResponse(ctx, http.StatusBadRequest, error, nil, nil)
+		utility.ApiResponse(ctx, http.StatusBadRequest, err.Error(), nil, nil)
 		return
 	}
 
@@ -47,8 +47,7 @@ func (h *contactHandler) CreateContact(ctx *gin.Context) {
 	var request schemas.CreateUpdateContactRequest
 	err := utility.ShouldBind(ctx, &request)
 	if err != nil {
-		error := utility.FormatValidationError(err)
-		utility.ApiResponse(ctx, http.StatusBadRequest, error, nil, nil)
+		utility.ApiResponse(ctx, http.StatusBadRequest, err.Error(), nil, nil)
 		return
 	}
 
@@ -89,8 +88,7 @@ func (h *contactHandler) UpdateContact(ctx *gin.Context) {
 	var request schemas.CreateUpdateContactRequest
 	err := utility.ShouldBind(ctx, &request)
 	if err != nil {
-		error := utility.FormatValidationError(err)
-		utility.ApiResponse(ctx, http.StatusBadRequest, error, nil, nil)
+		utility.ApiResponse(ctx, http.StatusBadRequest, err.Error(), nil, nil)
 		return
 	}
 
@@ -102,4 +100,14 @@ func (h *contactHandler) UpdateContact(ctx *gin.Context) {
 	}
 
 	utility.ApiResponse(ctx, http.StatusOK, "success", nil, nil)
+}
+
+func (h *contactHandler) GetContactClient(ctx *gin.Context) {
+	contacts, err := h.contactService.ListContacts()
+	if err != nil {
+		utility.ApiResponse(ctx, http.StatusBadRequest, err.Error(), nil, nil)
+		return
+	}
+
+	utility.ApiResponse(ctx, http.StatusOK, "success", contacts, nil)
 }

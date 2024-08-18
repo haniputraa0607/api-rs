@@ -7,4 +7,5 @@ import (
 var base []interface{} = []interface{}{
 	&models.User{},
 	&models.Contact{},
+	&models.Partner{},
 }

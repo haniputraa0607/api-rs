@@ -14,6 +14,7 @@ type ContactService interface {
 	DeleteContact(ID string) (err error)
 	GetContact(ID string) (response *schemas.ContactResponse, err error)
 	UpdateContact(ID string, request schemas.CreateUpdateContactRequest) (err error)
+	ListContacts() (response []*schemas.ListContactResponse, err error)
 }
 
 type contactService struct {
@@ -116,7 +117,7 @@ func (s *contactService) UpdateContact(ID string, request schemas.CreateUpdateCo
 	}
 
 	contact.Name = request.Name
-	contact.Value = request.Name
+	contact.Value = request.Value
 
 	if request.Icon != nil {
 		contact.Icon = request.Icon
@@ -128,4 +129,21 @@ func (s *contactService) UpdateContact(ID string, request schemas.CreateUpdateCo
 	}
 
 	return nil
+}
+
+func (s *contactService) ListContacts() (response []*schemas.ListContactResponse, err error) {
+	contacts, err := s.contactRepository.ListContact()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, contact := range contacts {
+		response = append(response, &schemas.ListContactResponse{
+			ID:    contact.ID,
+			Name:  contact.Name,
+			Value: contact.Value,
+		})
+	}
+
+	return response, nil
 }

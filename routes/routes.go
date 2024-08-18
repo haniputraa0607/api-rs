@@ -45,6 +45,8 @@ func SetupRouter(r *gin.Engine, db *gorm.DB) {
 		clientRoutes := apiRoutes.Group("client")
 		{
 			clientRoutes.GET("/test", exampleHandler.Example)
+
+			clientRoutes.GET("/contact", contactHandler.GetContactClient)
 		}
 
 		// Admin Routes
